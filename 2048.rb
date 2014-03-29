@@ -102,18 +102,15 @@ def move_left
 	tempBoard = Marshal.load(Marshal.dump(@board))
 	(0..3).each{|ii| 
 		(0..3).each{|jj| 
-			skip = false
 			(jj..2).each{|kk| 
 				if @board[ii][kk + 1] == 0 
 					next
 				elsif @board[ii][jj] == @board[ii][kk + 1]
 					@board[ii][jj] = @board[ii][jj] * 2
 					@board[ii][kk + 1] = 0
-					skip = true
 				end
 				break
 			}
-
 		}
 		@board[ii] = shift_left @board[ii]
 	}
@@ -170,8 +167,6 @@ def check_lose
 end
 
 puts "move with wasd"
-
-# Game starts by generating 2 random pieces
 2.times{
 	new_piece
 }
@@ -205,4 +200,3 @@ if win
 else
 	puts ":-( maybe next time"
 end
-
