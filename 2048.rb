@@ -103,20 +103,14 @@ def move_left
 		(0..3).each{|jj| 
 			skip = false
 			(jj..2).each{|kk| 
-				if skip == true
-					skip = false
-					next
-				end
 				if @board[ii][kk + 1] == 0 
 					next
 				elsif @board[ii][jj] == @board[ii][kk + 1]
 					@board[ii][jj] = @board[ii][jj] * 2
 					@board[ii][kk + 1] = 0
 					skip = true
-					next
-				else
-					break
 				end
+				break
 			}
 
 		}
