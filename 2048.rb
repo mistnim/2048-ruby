@@ -188,6 +188,7 @@ while not check_win do
 	if work	== true
 		new_piece
 	end
+	puts "\e[H\e[2J"
 	print_board
 	if check_lose
 		win = false
