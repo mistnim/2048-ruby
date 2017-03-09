@@ -40,17 +40,18 @@ monotonicity_weight(47).
 merge_weight(700).
 empty_weight(270).
 
-%% row0(32, 32, 2, 2).
-%% row1(32,  0, 2, 0).
-%% row2(32,  2, 2, 0).
-%% row3(32,  0, 0, 0).
-
 move(up) | move(down) | move(left) | move(right).
+
+%% move up if top-right corner free
+%% slideUppable :- pos(1, 3, X), X != 0.
+%% slideUppable :- pos(2, 3, X), X != 0.
+%% slideUppable :- pos(3, 3, X), X != 0.
+%% :~ pos(0, 3, 0), slideUppable, not move(up). [100000]
 
 %% :~ move(down). [1@2]
 %% :~ move(right). [1@2]
-%% :~ move(down). [1000]
-%% :~ move(left). [200]
+%% :~ move(down). [9000]
+% :~ move(left). [200]
 
 capply_move(P, A00, A01, A02, A03, A10, A11, A12, A13, A20, A21, A22, A23, A30, A31, A32, A33) :- move(W),
              input(I00, I01, I02, I03, I10, I11, I12, I13, I20, I21, I22, I23, I30, I31, I32, I33),
@@ -66,6 +67,7 @@ possible(X) :- capply_move(X, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _).
 %% capply_move(yes, 0, 0, 0, 2, 0, 2, 4, 8, 0, 16, 64, 32, 4, 4, 16, 2) :- move(down).
 %% capply_move(yes, 2, 4, 2, 0, 64, 8, 0, 0, 16, 8, 32, 0, 8, 8, 2, 0) :- move(left).
 %% capply_move(yes, 0, 2, 4, 2, 0, 0, 64, 8, 0, 16, 8, 32, 0, 8, 8, 2) :- move(right).
+
 
 
 pos(0, 0, A00) :- capply_move(yes, A00, A01, A02, A03, A10, A11, A12, A13, A20, A21, A22, A23, A30, A31, A32, A33).
@@ -163,5 +165,3 @@ tuple(X, r, A, B) :- row(X, _, _, J, K), mono_power(J, A), mono_power(K, B).
 %% :~ mono_left(L), mono_right(R), L < R, monotonicity_weight(W), WR = L * W. [WR]
 %% :~ mono_left(L), mono_right(R), L > R, monotonicity_weight(W), WR = R * W. [WR]
 
-%% #show move/1
-%% #show row/5.

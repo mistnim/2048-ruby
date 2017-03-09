@@ -191,9 +191,7 @@ win = true
 while not check_win do
   # puts board_to_asp
   dir = { 'left' => 'a', 'right' => 'd', 'up' => 'w', 'down' => 's' }[get_asp_input]
-  # puts get_asp_input
-  # puts get_asp_input
-	# dir = get_input
+  # exit if STDIN.getch == 'q'
 	case dir
 	when 'a'
 		work = move_left
