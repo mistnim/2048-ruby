@@ -11,7 +11,7 @@ def color_num num
 	when 0
 		retnum = "    "
 	when 2
-		retnum = snum.red	
+		retnum = snum.red
 	when 4
 		retnum = snum.light_red
 	when 8
@@ -57,7 +57,12 @@ def print_board
 end
 
 def new_piece
-	piece = rand(1..2) * 2 # generate either 2 or 4
+  rnd = rand 10
+  if rnd == 0
+    piece = 4
+  else
+    piece = 2
+  end
 	xx = rand(0..3)
 	yy = rand(0..3)
 	(0..3).each{|ii|
@@ -77,21 +82,21 @@ def get_input
 	input = ''
 	dirs = ['w', 'a', 's', 'd']
 	while not dirs.include?(input) do
-		input = STDIN.getch 
-		if input == "\e" 
-			abort "escaped" 
-		end 
-	end 
-	return input 
-end 
+		input = STDIN.getch
+		if input == "q"
+			abort "quit"
+		end
+	end
+	return input
+end
 
 def shift_left line
 	l2 = Array.new
-	line.each{|ii|
+	line.each do |ii|
 		if not ii == 0
 			l2.push ii
 		end
-	}
+	end
 	while not l2.size == 4
 		l2.push 0
 	end
@@ -100,10 +105,10 @@ end
 
 def move_left
 	tempBoard = Marshal.load(Marshal.dump(@board))
-	(0..3).each{|ii| 
-		(0..3).each{|jj| 
-			(jj..2).each{|kk| 
-				if @board[ii][kk + 1] == 0 
+	(0..3).each{|ii|
+		(0..3).each{|jj|
+			(jj..2).each{|kk|
+				if @board[ii][kk + 1] == 0
 					next
 				elsif @board[ii][jj] == @board[ii][kk + 1]
 					@board[ii][jj] = @board[ii][jj] * 2
@@ -166,15 +171,29 @@ def check_lose
 	return false
 end
 
+def board_to_asp
+  'input(' + @board.flatten.join(', ') + ').'
+end
+
+def get_asp_input
+  # File.open('input.pl', 'w') do |file|
+  #   file.write board_to_asp
+  # end
+  idlv_path = '../idlv'
+  (`echo "#{board_to_asp}" | cat - logic.pl | #{idlv_path} --stdin applymove.py | clasp`.scan /move\((\w+)\)/)[-1][0]
+end
+
 puts "move with wasd"
-2.times{
-	new_piece
-}
+2.times{ new_piece }
 print_board
 win = true
+
 while not check_win do
-	dir = get_input
-	#do movement
+  # puts board_to_asp
+  dir = { 'left' => 'a', 'right' => 'd', 'up' => 'w', 'down' => 's' }[get_asp_input]
+  # puts get_asp_input
+  # puts get_asp_input
+	# dir = get_input
 	case dir
 	when 'a'
 		work = move_left
@@ -190,6 +209,7 @@ while not check_win do
 	end
 	puts "\e[H\e[2J"
 	print_board
+
 	if check_lose
 		win = false
 		break
