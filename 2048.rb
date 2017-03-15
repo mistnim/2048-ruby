@@ -179,8 +179,8 @@ def get_asp_input
   # File.open('input.pl', 'w') do |file|
   #   file.write board_to_asp
   # end
-  idlv_path = '../idlv'
-  (`echo "#{board_to_asp}" | cat - logic.pl | #{idlv_path} --stdin applymove.py | clasp`.scan /move\((\w+)\)/)[-1][0]
+  idlv_path = 'idlv'
+  (`echo "#{board_to_asp}" | cat - tables.pl logic.pl | #{idlv_path} --stdin applymove.py | clasp`.scan /move\((\w+)\)/)[-1][0]
 end
 
 puts "move with wasd"

@@ -1,39 +1,4 @@
-% -*-Fundamental-*-
-
-mono_power(0,0).
-mono_power(2,1).
-mono_power(4,16).
-mono_power(8,81).
-mono_power(16,256).
-mono_power(32,625).
-mono_power(64,1296).
-mono_power(128,2401).
-mono_power(256,4096).
-mono_power(512,6561).
-mono_power(1024,10000).
-mono_power(2048,14641).
-mono_power(4096,20736).
-mono_power(8192,28561).
-mono_power(16384,38416).
-mono_power(32768,50625).
-mono_power(65536,65536).
-
-sum_power(2,1).
-sum_power(4,11).
-sum_power(8,46).
-sum_power(16,128).
-sum_power(32,279).
-sum_power(64,529).
-sum_power(128,907).
-sum_power(256,1448).
-sum_power(512,2187).
-sum_power(1024,3162).
-sum_power(2048,4414).
-sum_power(4096,5985).
-sum_power(8192,7921).
-sum_power(16384,10267).
-sum_power(32768,13071).
-sum_power(65536,16384).
+% -*-Prolog-*-
 
 sum_weight(11).
 monotonicity_weight(47).
@@ -60,15 +25,6 @@ capply_move(P, A00, A01, A02, A03, A10, A11, A12, A13, A20, A21, A22, A23, A30, 
 
 possible(X) :- capply_move(X, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _).
 :- not possible(yes).
-
-
-% source capply_move(yes, 0, 2, 4, 2, 0, 0, 64, 8, 0, 16, 8, 32, 4, 4, 8, 2).
-%% capply_move(yes, 4, 2, 4, 2, 0, 16, 64, 8, 0, 4, 16, 32, 0, 0, 0, 2) :- move(up).
-%% capply_move(yes, 0, 0, 0, 2, 0, 2, 4, 8, 0, 16, 64, 32, 4, 4, 16, 2) :- move(down).
-%% capply_move(yes, 2, 4, 2, 0, 64, 8, 0, 0, 16, 8, 32, 0, 8, 8, 2, 0) :- move(left).
-%% capply_move(yes, 0, 2, 4, 2, 0, 0, 64, 8, 0, 16, 8, 32, 0, 8, 8, 2) :- move(right).
-
-
 
 pos(0, 0, A00) :- capply_move(yes, A00, A01, A02, A03, A10, A11, A12, A13, A20, A21, A22, A23, A30, A31, A32, A33).
 pos(0, 1, A01) :- capply_move(yes, A00, A01, A02, A03, A10, A11, A12, A13, A20, A21, A22, A23, A30, A31, A32, A33).
