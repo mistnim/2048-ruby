@@ -180,7 +180,7 @@ def get_asp_input
   #   file.write board_to_asp
   # end
   idlv_path = 'idlv'
-  (`echo "#{board_to_asp}" | cat - tables.pl logic.pl | #{idlv_path} --stdin applymove.py | clasp`.scan /move\((\w+)\)/)[-1][0]
+  (`echo "#{board_to_asp} depth(0)." | cat - tables.pl logic.pl | #{idlv_path} --stdin applymove.py | clasp`.scan /move\((\w+)\)/)[-1][0]
 end
 
 puts "move with wasd"
@@ -189,9 +189,9 @@ print_board
 win = true
 
 while not check_win do
-  # puts board_to_asp
+  puts board_to_asp
   dir = { 'left' => 'a', 'right' => 'd', 'up' => 'w', 'down' => 's' }[get_asp_input]
-  # exit if STDIN.getch == 'q'
+  #exit if STDIN.getch == 'q'
 	case dir
 	when 'a'
 		work = move_left

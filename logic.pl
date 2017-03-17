@@ -1,5 +1,13 @@
 % -*-Prolog-*-
 
+cprob("1") :- depth(0).
+max_depth(1).
+
+heur :- max_depth(MAX), depth(X), X >= MAX.
+heur :- prob_thresh.
+
+% lost_penalty(200000).
+lost_penalty(20000000).
 sum_weight(11).
 monotonicity_weight(47).
 merge_weight(700).
@@ -15,33 +23,39 @@ move(up) | move(down) | move(left) | move(right).
 
 %% :~ move(down). [1@2]
 %% :~ move(right). [1@2]
-%% :~ move(down). [9000]
-% :~ move(left). [200]
+%% :~ move(down). [900000]
+%% :~ move(right). [900000]
 
 capply_move(P, A00, A01, A02, A03, A10, A11, A12, A13, A20, A21, A22, A23, A30, A31, A32, A33) :- move(W),
              input(I00, I01, I02, I03, I10, I11, I12, I13, I20, I21, I22, I23, I30, I31, I32, I33),
              &apply_move(W, I00, I01, I02, I03, I10, I11, I12, I13, I20, I21, I22, I23, I30, I31, I32, I33;
                          P, A00, A01, A02, A03, A10, A11, A12, A13, A20, A21, A22, A23, A30, A31, A32, A33).
 
-possible(X) :- capply_move(X, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _).
-:- not possible(yes).
+ahead(Res) :- capply_move(yes, A00, A01, A02, A03, A10, A11, A12, A13, A20, A21, A22, A23, A30, A31, A32, A33),
+not heur, depth(D), cprob(CP), &eval_branches(D, CP, A00, A01, A02, A03, A10, A11, A12, A13, A20, A21, A22, A23, A30, A31, A32, A33; Res).
+:~ ahead(X). [X]
 
-pos(0, 0, A00) :- capply_move(yes, A00, A01, A02, A03, A10, A11, A12, A13, A20, A21, A22, A23, A30, A31, A32, A33).
-pos(0, 1, A01) :- capply_move(yes, A00, A01, A02, A03, A10, A11, A12, A13, A20, A21, A22, A23, A30, A31, A32, A33).
-pos(0, 2, A02) :- capply_move(yes, A00, A01, A02, A03, A10, A11, A12, A13, A20, A21, A22, A23, A30, A31, A32, A33).
-pos(0, 3, A03) :- capply_move(yes, A00, A01, A02, A03, A10, A11, A12, A13, A20, A21, A22, A23, A30, A31, A32, A33).
-pos(1, 0, A10) :- capply_move(yes, A00, A01, A02, A03, A10, A11, A12, A13, A20, A21, A22, A23, A30, A31, A32, A33).
-pos(1, 1, A11) :- capply_move(yes, A00, A01, A02, A03, A10, A11, A12, A13, A20, A21, A22, A23, A30, A31, A32, A33).
-pos(1, 2, A12) :- capply_move(yes, A00, A01, A02, A03, A10, A11, A12, A13, A20, A21, A22, A23, A30, A31, A32, A33).
-pos(1, 3, A13) :- capply_move(yes, A00, A01, A02, A03, A10, A11, A12, A13, A20, A21, A22, A23, A30, A31, A32, A33).
-pos(2, 0, A20) :- capply_move(yes, A00, A01, A02, A03, A10, A11, A12, A13, A20, A21, A22, A23, A30, A31, A32, A33).
-pos(2, 1, A21) :- capply_move(yes, A00, A01, A02, A03, A10, A11, A12, A13, A20, A21, A22, A23, A30, A31, A32, A33).
-pos(2, 2, A22) :- capply_move(yes, A00, A01, A02, A03, A10, A11, A12, A13, A20, A21, A22, A23, A30, A31, A32, A33).
-pos(2, 3, A23) :- capply_move(yes, A00, A01, A02, A03, A10, A11, A12, A13, A20, A21, A22, A23, A30, A31, A32, A33).
-pos(3, 0, A30) :- capply_move(yes, A00, A01, A02, A03, A10, A11, A12, A13, A20, A21, A22, A23, A30, A31, A32, A33).
-pos(3, 1, A31) :- capply_move(yes, A00, A01, A02, A03, A10, A11, A12, A13, A20, A21, A22, A23, A30, A31, A32, A33).
-pos(3, 2, A32) :- capply_move(yes, A00, A01, A02, A03, A10, A11, A12, A13, A20, A21, A22, A23, A30, A31, A32, A33).
-pos(3, 3, A33) :- capply_move(yes, A00, A01, A02, A03, A10, A11, A12, A13, A20, A21, A22, A23, A30, A31, A32, A33).
+possible(X) :- capply_move(X, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _).
+dead :- not possible(yes).
+:~ dead, lost_penalty(X). [X]
+% :- not possible(yes).
+
+pos(0, 0, A00) :- capply_move(yes, A00, A01, A02, A03, A10, A11, A12, A13, A20, A21, A22, A23, A30, A31, A32, A33), heur.
+pos(0, 1, A01) :- capply_move(yes, A00, A01, A02, A03, A10, A11, A12, A13, A20, A21, A22, A23, A30, A31, A32, A33), heur.
+pos(0, 2, A02) :- capply_move(yes, A00, A01, A02, A03, A10, A11, A12, A13, A20, A21, A22, A23, A30, A31, A32, A33), heur.
+pos(0, 3, A03) :- capply_move(yes, A00, A01, A02, A03, A10, A11, A12, A13, A20, A21, A22, A23, A30, A31, A32, A33), heur.
+pos(1, 0, A10) :- capply_move(yes, A00, A01, A02, A03, A10, A11, A12, A13, A20, A21, A22, A23, A30, A31, A32, A33), heur.
+pos(1, 1, A11) :- capply_move(yes, A00, A01, A02, A03, A10, A11, A12, A13, A20, A21, A22, A23, A30, A31, A32, A33), heur.
+pos(1, 2, A12) :- capply_move(yes, A00, A01, A02, A03, A10, A11, A12, A13, A20, A21, A22, A23, A30, A31, A32, A33), heur.
+pos(1, 3, A13) :- capply_move(yes, A00, A01, A02, A03, A10, A11, A12, A13, A20, A21, A22, A23, A30, A31, A32, A33), heur.
+pos(2, 0, A20) :- capply_move(yes, A00, A01, A02, A03, A10, A11, A12, A13, A20, A21, A22, A23, A30, A31, A32, A33), heur.
+pos(2, 1, A21) :- capply_move(yes, A00, A01, A02, A03, A10, A11, A12, A13, A20, A21, A22, A23, A30, A31, A32, A33), heur.
+pos(2, 2, A22) :- capply_move(yes, A00, A01, A02, A03, A10, A11, A12, A13, A20, A21, A22, A23, A30, A31, A32, A33), heur.
+pos(2, 3, A23) :- capply_move(yes, A00, A01, A02, A03, A10, A11, A12, A13, A20, A21, A22, A23, A30, A31, A32, A33), heur.
+pos(3, 0, A30) :- capply_move(yes, A00, A01, A02, A03, A10, A11, A12, A13, A20, A21, A22, A23, A30, A31, A32, A33), heur.
+pos(3, 1, A31) :- capply_move(yes, A00, A01, A02, A03, A10, A11, A12, A13, A20, A21, A22, A23, A30, A31, A32, A33), heur.
+pos(3, 2, A32) :- capply_move(yes, A00, A01, A02, A03, A10, A11, A12, A13, A20, A21, A22, A23, A30, A31, A32, A33), heur.
+pos(3, 3, A33) :- capply_move(yes, A00, A01, A02, A03, A10, A11, A12, A13, A20, A21, A22, A23, A30, A31, A32, A33), heur.
 
 
 %% pos(0, 0, X) :- row0(X, _, _, _).

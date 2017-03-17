@@ -1,4 +1,52 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
+import os
+import sys
+
+def printerr(str, **kwargs):
+     print(str, file=sys.stderr, **kwargs)
+
+CPROB_THRESH = 0.001
+def print_board(board):
+    for i in range(0,16):
+        if (i % 4) == 0:
+            print(file=sys.stderr)
+            print(board[i], file=sys.stderr, end='\t')
+        else:
+            print(board[i], file=sys.stderr, end='\t')
+
+
+def eval_branch(depth, cprob, board):
+    input = 'input(' + ', '.join(str(x) for x in board) + ').'
+    if cprob < CPROB_THRESH:
+        input += 'prob_thresh.'
+    input += 'depth(' + str(depth + 1) + ').'
+    input += 'cprob(\\"' + str(cprob) + '\\").'
+    cmd = "echo \"" + input + "\" | cat - tables.pl logic.pl | idlv --stdin applymove.py | clasp | grep '^Optimization\s:' | cut -f 3 -d ' '"
+    ret = int(os.popen(cmd).read())
+    # print(cmd, file=sys.stderr)
+    # printerr(ret)
+    return ret
+
+def eval_branches(depth, cprob, a00, a01, a02, a03, a10, a11, a12, a13, a20, a21, a22, a23, a30, a31, a32, a33):
+    board=[a00,a01,a02,a03,a10,a11,a12,a13,a20,a21,a22,a23,a30,a31,a32,a33]
+    cprob = float(cprob)
+    num_open = board.count(0)
+    cprob = cprob / num_open
+    res = 0
+
+    for idx, val in enumerate(board):
+        tmp = board[:]
+        if val == 0:
+            tmp[idx] = 2
+            res += eval_branch(depth, cprob * 0.9, tmp) * 0.9
+            tmp[idx] = 4
+            res += eval_branch(depth, cprob * 0.1, tmp) * 0.1
+    res = res / num_open
+
+    # print_board(board)
+    # print(depth, file=sys.stderr)
+    # print(res, file=sys.stderr)
+    return int(res)
 
 def apply_move(direction, a00, a01, a02, a03, a10, a11, a12, a13, a20, a21, a22, a23, a30, a31, a32, a33):
     new=[[a00,a01,a02,a03],[a10,a11,a12,a13],[a20,a21,a22,a23],[a30,a31,a32,a33]]
