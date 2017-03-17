@@ -1,0 +1,17 @@
+clasp version 3.1.0
+Reading from stdin
+Solving...
+Answer: 1
+after(up,256,64,16,8,128,32,8,4,32,8,4,2,16,4,2,0) after(down,256,64,16,0,128,32,8,8,32,8,4,4,16,4,2,2) after(left,256,64,16,8,128,32,8,4,32,8,4,0,16,4,4,0) after(right,256,64,16,8,128,32,8,4,0,32,8,4,0,16,4,4) mono_power(0,0) mono_power(2,1) mono_power(4,16) mono_power(8,81) mono_power(16,256) mono_power(32,625) mono_power(64,1296) mono_power(128,2401) mono_power(256,4096) mono_power(512,6561) mono_power(1024,10000) mono_power(2048,14641) mono_power(4096,20736) mono_power(8192,28561) mono_power(16384,38416) mono_power(32768,50625) mono_power(65536,65536) sum_power(2,1) sum_power(4,11) sum_power(8,46) sum_power(16,128) sum_power(32,279) sum_power(64,529) sum_power(128,907) sum_power(256,1448) sum_power(512,2187) sum_power(1024,3162) sum_power(2048,4414) sum_power(4096,5985) sum_power(8192,7921) sum_power(16384,10267) sum_power(32768,13071) sum_power(65536,16384) lost_penalty(20000000) sum_weight(11) monotonicity_weight(47) merge_weight(700) empty_weight(270) side(l) side(c) side(r) pbl(up) pbl(down) pbl(left) pbl(right) move(right) capply_move(yes,256,64,16,8,128,32,8,4,0,32,8,4,0,16,4,4) ahead(72197)
+Optimization: 72197
+Answer: 2
+after(up,256,64,16,8,128,32,8,4,32,8,4,2,16,4,2,0) after(down,256,64,16,0,128,32,8,8,32,8,4,4,16,4,2,2) after(left,256,64,16,8,128,32,8,4,32,8,4,0,16,4,4,0) after(right,256,64,16,8,128,32,8,4,0,32,8,4,0,16,4,4) mono_power(0,0) mono_power(2,1) mono_power(4,16) mono_power(8,81) mono_power(16,256) mono_power(32,625) mono_power(64,1296) mono_power(128,2401) mono_power(256,4096) mono_power(512,6561) mono_power(1024,10000) mono_power(2048,14641) mono_power(4096,20736) mono_power(8192,28561) mono_power(16384,38416) mono_power(32768,50625) mono_power(65536,65536) sum_power(2,1) sum_power(4,11) sum_power(8,46) sum_power(16,128) sum_power(32,279) sum_power(64,529) sum_power(128,907) sum_power(256,1448) sum_power(512,2187) sum_power(1024,3162) sum_power(2048,4414) sum_power(4096,5985) sum_power(8192,7921) sum_power(16384,10267) sum_power(32768,13071) sum_power(65536,16384) lost_penalty(20000000) sum_weight(11) monotonicity_weight(47) merge_weight(700) empty_weight(270) side(l) side(c) side(r) pbl(up) pbl(down) pbl(left) pbl(right) move(down) capply_move(yes,256,64,16,0,128,32,8,8,32,8,4,4,16,4,2,2) ahead(0)
+Optimization: 0
+OPTIMUM FOUND
+
+Models       : 2     
+  Optimum    : yes
+Optimization : 0
+Calls        : 1
+Time         : 0.001s (Solving: 0.00s 1st Model: 0.00s Unsat: 0.00s)
+CPU Time     : 0.000s

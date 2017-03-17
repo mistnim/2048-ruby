@@ -56,7 +56,6 @@ def eval_branch(board):
     input += add_after(board)
 
     cmd = "echo \"" + input + "\" | cat - tables.pl logic.pl | idlv --stdin applymove.py | clasp | grep '^Optimization\s:' | cut -f 3 -d ' '"
-    #printerr(cmd)
     ret = int(os.popen(cmd).read())
     return ret
 

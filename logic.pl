@@ -32,7 +32,7 @@ not heur, &eval_branches(A00, A01, A02, A03, A10, A11, A12, A13, A20, A21, A22, 
 :~ dead, lost_penalty(X). [X]
 % :- not possible(yes).
 pbl(W) :- after(W, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _).
-:- move(W), not pbl(W).
+:- move(W), not pbl(W), not heur.
 
 pos(0, 0, A00) :- capply_move(yes, A00, A01, A02, A03, A10, A11, A12, A13, A20, A21, A22, A23, A30, A31, A32, A33), heur.
 pos(0, 1, A01) :- capply_move(yes, A00, A01, A02, A03, A10, A11, A12, A13, A20, A21, A22, A23, A30, A31, A32, A33), heur.
