@@ -32,6 +32,8 @@ def color_num num
 		retnum = snum.light_magenta
 	when 2048
 		retnum = snum.magenta
+  when 4096
+    retnum = snum.light_white
 	else
 		abort "error"
 	end
@@ -188,9 +190,9 @@ puts "move with wasd"
 print_board
 win = true
 
-while not check_win do
-  puts board_to_asp
-  dir = { 'left' => 'a', 'right' => 'd', 'up' => 'w', 'down' => 's' }[get_asp_input]
+loop do
+  input = get_asp_input
+  dir = { 'left' => 'a', 'right' => 'd', 'up' => 'w', 'down' => 's' }[input]
   #exit if STDIN.getch == 'q'
 	case dir
 	when 'a'

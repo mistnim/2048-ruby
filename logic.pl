@@ -1,11 +1,5 @@
 % -*-Prolog-*-
 
-cprob("1") :- depth(0).
-max_depth(1).
-
-heur :- max_depth(MAX), depth(X), X >= MAX.
-heur :- prob_thresh.
-
 % lost_penalty(200000).
 lost_penalty(20000000).
 sum_weight(11).
@@ -19,7 +13,7 @@ move(up) | move(down) | move(left) | move(right).
 %% slideUppable :- pos(1, 3, X), X != 0.
 %% slideUppable :- pos(2, 3, X), X != 0.
 %% slideUppable :- pos(3, 3, X), X != 0.
-%% :~ pos(0, 3, 0), slideUppable, not move(up). [100000]
+%% :~ pos(0, 3, 0). [10000]
 
 %% :~ move(down). [1@2]
 %% :~ move(right). [1@2]
@@ -32,7 +26,7 @@ capply_move(P, A00, A01, A02, A03, A10, A11, A12, A13, A20, A21, A22, A23, A30, 
                          P, A00, A01, A02, A03, A10, A11, A12, A13, A20, A21, A22, A23, A30, A31, A32, A33).
 
 ahead(Res) :- capply_move(yes, A00, A01, A02, A03, A10, A11, A12, A13, A20, A21, A22, A23, A30, A31, A32, A33),
-not heur, depth(D), cprob(CP), &eval_branches(D, CP, A00, A01, A02, A03, A10, A11, A12, A13, A20, A21, A22, A23, A30, A31, A32, A33; Res).
+not heur, &eval_branches(A00, A01, A02, A03, A10, A11, A12, A13, A20, A21, A22, A23, A30, A31, A32, A33; Res).
 :~ ahead(X). [X]
 
 possible(X) :- capply_move(X, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _).

@@ -15,21 +15,16 @@ def print_board(board):
             print(board[i], file=sys.stderr, end='\t')
 
 
-def eval_branch(depth, cprob, board):
+def eval_branch(board):
     input = 'input(' + ', '.join(str(x) for x in board) + ').'
-    if cprob < CPROB_THRESH:
-        input += 'prob_thresh.'
-    input += 'depth(' + str(depth + 1) + ').'
-    input += 'cprob(\\"' + str(cprob) + '\\").'
+    input += 'heur.'
     cmd = "echo \"" + input + "\" | cat - tables.pl logic.pl | idlv --stdin applymove.py | clasp | grep '^Optimization\s:' | cut -f 3 -d ' '"
     ret = int(os.popen(cmd).read())
-    # print(cmd, file=sys.stderr)
-    # printerr(ret)
     return ret
 
-def eval_branches(depth, cprob, a00, a01, a02, a03, a10, a11, a12, a13, a20, a21, a22, a23, a30, a31, a32, a33):
+def eval_branches(a00, a01, a02, a03, a10, a11, a12, a13, a20, a21, a22, a23, a30, a31, a32, a33):
     board=[a00,a01,a02,a03,a10,a11,a12,a13,a20,a21,a22,a23,a30,a31,a32,a33]
-    cprob = float(cprob)
+    cprob = 1
     num_open = board.count(0)
     cprob = cprob / num_open
     res = 0
@@ -37,10 +32,14 @@ def eval_branches(depth, cprob, a00, a01, a02, a03, a10, a11, a12, a13, a20, a21
     for idx, val in enumerate(board):
         tmp = board[:]
         if val == 0:
-            tmp[idx] = 2
-            res += eval_branch(depth, cprob * 0.9, tmp) * 0.9
-            tmp[idx] = 4
-            res += eval_branch(depth, cprob * 0.1, tmp) * 0.1
+            if num_open < 4:
+                tmp[idx] = 2
+                res += eval_branch(tmp) * 0.9
+                tmp[idx] = 4
+                res += eval_branch(tmp) * 0.1
+            else:
+                tmp[idx] = 2
+                res += eval_branch(tmp)
     res = res / num_open
 
     # print_board(board)
