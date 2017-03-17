@@ -105,63 +105,66 @@ def shift_left line
 	return l2
 end
 
-def move_left
-	tempBoard = Marshal.load(Marshal.dump(@board))
+def move_left board
+	tempBoard = Marshal.load(Marshal.dump(board))
 	(0..3).each{|ii|
 		(0..3).each{|jj|
 			(jj..2).each{|kk|
-				if @board[ii][kk + 1] == 0
+				if board[ii][kk + 1] == 0
 					next
-				elsif @board[ii][jj] == @board[ii][kk + 1]
-					@board[ii][jj] = @board[ii][jj] * 2
-					@board[ii][kk + 1] = 0
+				elsif board[ii][jj] == board[ii][kk + 1]
+					board[ii][jj] = board[ii][jj] * 2
+					board[ii][kk + 1] = 0
 				end
 				break
 			}
 		}
-		@board[ii] = shift_left @board[ii]
+		board[ii] = shift_left board[ii]
 	}
-	if @board == tempBoard
+	if board == tempBoard
 		return false
 	else
-		return true
+		return board
 	end
 end
 
-def move_right
-	@board.each{|a|a.reverse!}
-	work = move_left
-	@board.each{|a|a.reverse!}
-	return work
+def move_right board
+	board.each{|a|a.reverse!}
+	work = move_left board
+	board.each{|a|a.reverse!}
+	return false unless work
+  board
 end
 
-def move_down
-	@board = @board.transpose.map &:reverse
-	work = move_left
-	@board = @board.transpose.map &:reverse
-	@board = @board.transpose.map &:reverse
-	@board = @board.transpose.map &:reverse
-	return work
+def move_down board
+	board = board.transpose.map &:reverse
+	work = move_left board
+	board = board.transpose.map &:reverse
+	board = board.transpose.map &:reverse
+	board = board.transpose.map &:reverse
+	return false unless work
+  board
 end
 
-def move_up
-	@board = @board.transpose.map &:reverse
-	@board = @board.transpose.map &:reverse
-	@board = @board.transpose.map &:reverse
-	work = move_left
-	@board = @board.transpose.map &:reverse
-	return work
+def move_up board
+	board = board.transpose.map &:reverse
+	board = board.transpose.map &:reverse
+	board = board.transpose.map &:reverse
+	work = move_left board
+	board = board.transpose.map &:reverse
+	return false unless work
+  board
 end
 
 def check_lose
 	tempBoard = Marshal.load(Marshal.dump(@board))
-	t = move_right
+	t = move_right @board
 	if t == false
-		t = move_left
+		t = move_left @board
 		if t == false
-			t = move_up
+			t = move_up @board
 			if t == false
-				t = move_down
+				t = move_down @board
 				if t == false
 					@board = Marshal.load(Marshal.dump(tempBoard))
 					return true
@@ -173,8 +176,8 @@ def check_lose
 	return false
 end
 
-def board_to_asp
-  'input(' + @board.flatten.join(', ') + ').'
+def board_to_asp board
+  board.flatten.join(', ')
 end
 
 def get_asp_input
@@ -182,7 +185,16 @@ def get_asp_input
   #   file.write board_to_asp
   # end
   idlv_path = 'idlv'
-  (`echo "#{board_to_asp} depth(0)." | cat - tables.pl logic.pl | #{idlv_path} --stdin applymove.py | clasp`.scan /move\((\w+)\)/)[-1][0]
+  input = "input(#{board_to_asp @board}). depth(0)."
+  apply = move_left @board
+  input += "after(left, #{board_to_asp apply})." if apply
+  apply = move_right @board
+  input += "after(right, #{board_to_asp apply})." if apply
+  apply = move_up @board
+  input += "after(up, #{board_to_asp apply})." if apply
+  apply = move_down @board
+  input += "after(down, #{board_to_asp apply})." if apply
+  (`echo "#{input}" | cat - tables.pl logic.pl | #{idlv_path} --stdin applymove.py | clasp`.scan /move\((\w+)\)/)[-1][0]
 end
 
 puts "move with wasd"
@@ -191,20 +203,29 @@ print_board
 win = true
 
 loop do
+  puts "evaling"
   input = get_asp_input
+  puts "evaled"
   dir = { 'left' => 'a', 'right' => 'd', 'up' => 'w', 'down' => 's' }[input]
   #exit if STDIN.getch == 'q'
+  work = true
 	case dir
 	when 'a'
-		work = move_left
+		apply = move_left @board
 	when 'd'
-		work = move_right
+		apply = move_right @board
 	when 's'
-		work = move_down
+		apply = move_down @board
 	when 'w'
-		work = move_up
+		apply = move_up @board
 	end
-	if work	== true
+  if apply
+    @board = apply
+  else
+    work = false
+  end
+
+	if work
 		new_piece
 	end
 	puts "\e[H\e[2J"
@@ -221,3 +242,5 @@ if win
 else
 	puts ":-( maybe next time"
 end
+
+

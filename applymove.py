@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import os
 import sys
+from itertools import zip_longest
 
 def printerr(str, **kwargs):
      print(str, file=sys.stderr, **kwargs)
@@ -14,11 +15,48 @@ def print_board(board):
         else:
             print(board[i], file=sys.stderr, end='\t')
 
+def add_after(board):
+    board = [board[n:n+4] for n in range(0, len(board), 4)]
+    flag = False
+    s = ''
+    res,done = up(board)
+    if done:
+        res = [item for sublist in res for item in sublist]
+        s += 'after(up,' + ', '.join(str(x) for x in res) + ').'
+        flag = True
+    res,done = down(board)
+    if done:
+        res = [item for sublist in res for item in sublist]
+        s += 'after(down,' + ', '.join(str(x) for x in res) + ').'
+        flag = True
+    res,done = left(board)
+    if done:
+        res = [item for sublist in res for item in sublist]
+        s += 'after(left,' + ', '.join(str(x) for x in res) + ').'
+        flag = True
+    res,done = right(board)
+    if done:
+        res = [item for sublist in res for item in sublist]
+        s += 'after(right,' + ', '.join(str(x) for x in res) + ').'
+        flag = True
+    if not flag:
+        return 'dead.'
+    return s
+
+def play(board):
+    input = add_after([item for sublist in board for item in sublist] )
+    cmd = "echo \"" + input + "\" | cat - tables.pl logic.pl | idlv --stdin applymove.py | clasp"
+    cmd += "| grep -B 2 'OPTIMUM FOUND' | head -n 1 | sed -r 's/.+move\\((\w+)\\).*/\\1/'"
+    printerr(cmd)
+    return os.popen(cmd).read().rstrip()
 
 def eval_branch(board):
     input = 'input(' + ', '.join(str(x) for x in board) + ').'
     input += 'heur.'
+    input += add_after(board)
+
     cmd = "echo \"" + input + "\" | cat - tables.pl logic.pl | idlv --stdin applymove.py | clasp | grep '^Optimization\s:' | cut -f 3 -d ' '"
+    #printerr(cmd)
     ret = int(os.popen(cmd).read())
     return ret
 

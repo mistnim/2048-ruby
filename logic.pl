@@ -20,19 +20,19 @@ move(up) | move(down) | move(left) | move(right).
 %% :~ move(down). [900000]
 %% :~ move(right). [900000]
 
-capply_move(P, A00, A01, A02, A03, A10, A11, A12, A13, A20, A21, A22, A23, A30, A31, A32, A33) :- move(W),
-             input(I00, I01, I02, I03, I10, I11, I12, I13, I20, I21, I22, I23, I30, I31, I32, I33),
-             &apply_move(W, I00, I01, I02, I03, I10, I11, I12, I13, I20, I21, I22, I23, I30, I31, I32, I33;
-                         P, A00, A01, A02, A03, A10, A11, A12, A13, A20, A21, A22, A23, A30, A31, A32, A33).
+capply_move(yes, A00, A01, A02, A03, A10, A11, A12, A13, A20, A21, A22, A23, A30, A31, A32, A33) :- move(W),
+             after(W, A00, A01, A02, A03, A10, A11, A12, A13, A20, A21, A22, A23, A30, A31, A32, A33).
 
 ahead(Res) :- capply_move(yes, A00, A01, A02, A03, A10, A11, A12, A13, A20, A21, A22, A23, A30, A31, A32, A33),
 not heur, &eval_branches(A00, A01, A02, A03, A10, A11, A12, A13, A20, A21, A22, A23, A30, A31, A32, A33; Res).
 :~ ahead(X). [X]
 
-possible(X) :- capply_move(X, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _).
-dead :- not possible(yes).
+%% possible(X) :- capply_move(X, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _).
+%% dead :- not possible(yes).
 :~ dead, lost_penalty(X). [X]
 % :- not possible(yes).
+pbl(W) :- after(W, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _).
+:- move(W), not pbl(W).
 
 pos(0, 0, A00) :- capply_move(yes, A00, A01, A02, A03, A10, A11, A12, A13, A20, A21, A22, A23, A30, A31, A32, A33), heur.
 pos(0, 1, A01) :- capply_move(yes, A00, A01, A02, A03, A10, A11, A12, A13, A20, A21, A22, A23, A30, A31, A32, A33), heur.
