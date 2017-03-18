@@ -43,7 +43,13 @@ def add_after(board):
     return s
 
 def play(board):
-    input = add_after([item for sublist in board for item in sublist] )
+    board = [item for sublist in board for item in sublist]
+    input = add_after(board)
+    if input == 'dead.':
+        return 'left'
+
+    if board.count(0) > 2:
+        input += "heur."
     cmd = "echo \"" + input + "\" | cat - tables.pl logic.pl | idlv --stdin applymove.py | clasp"
     cmd += "| grep -B 2 'OPTIMUM FOUND' | head -n 1 | sed -r 's/.+move\\((\w+)\\).*/\\1/'"
     printerr(cmd)
@@ -70,7 +76,7 @@ def eval_branches(a00, a01, a02, a03, a10, a11, a12, a13, a20, a21, a22, a23, a3
     for idx, val in enumerate(board):
         tmp = board[:]
         if val == 0:
-            if num_open < 4:
+            if num_open <= 1:
                 tmp[idx] = 2
                 res += eval_branch(tmp) * 0.9
                 tmp[idx] = 4
@@ -82,7 +88,7 @@ def eval_branches(a00, a01, a02, a03, a10, a11, a12, a13, a20, a21, a22, a23, a3
 
     # print_board(board)
     # print(depth, file=sys.stderr)
-    # print(res, file=sys.stderr)
+    #print(int(res), file=sys.stderr)
     return int(res)
 
 def apply_move(direction, a00, a01, a02, a03, a10, a11, a12, a13, a20, a21, a22, a23, a30, a31, a32, a33):
