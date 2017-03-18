@@ -6,7 +6,6 @@ from itertools import zip_longest
 def printerr(str, **kwargs):
      print(str, file=sys.stderr, **kwargs)
 
-CPROB_THRESH = 0.001
 def print_board(board):
     for i in range(0,16):
         if (i % 4) == 0:

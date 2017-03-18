@@ -14,7 +14,11 @@ def add_two(mat):
     while(mat[a][b]!=0):
         a=randint(0,len(mat)-1)
         b=randint(0,len(mat)-1)
-    mat[a][b]=2
+    q = randint(0,9)
+    if q == 0:
+        mat[a][b]=4
+    else:
+        mat[a][b]=2
     return mat
 
 def game_state(mat):
