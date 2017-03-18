@@ -3,6 +3,7 @@ from tkinter import *
 from game import *
 from applymove import *
 from random import *
+import sys
 
 SIZE = 500
 GRID_LEN = 4
@@ -45,6 +46,9 @@ class GameGrid(Frame):
 
     def __init__(self):
         Frame.__init__(self)
+        self.aiplays = True
+        if len(sys.argv) > 1:
+            self.aiplays = False
 
         self.grid()
         self.master.title('2048')
@@ -57,6 +61,8 @@ class GameGrid(Frame):
         self.commands = {   KEY_UP: up, KEY_DOWN: down, KEY_LEFT: left, KEY_RIGHT: right,
                             KEY_UP_ALT: up, KEY_DOWN_ALT: down, KEY_LEFT_ALT: left, KEY_RIGHT_ALT: right }
 
+        self.go_ahead = False
+
         self.grid_cells = []
         self.init_grid()
         self.init_matrix()
@@ -66,7 +72,9 @@ class GameGrid(Frame):
         # self.mainloop()
 
         while True:
-            self.ai_moves()
+            if self.go_ahead or self.aiplays:
+                self.ai_moves()
+                self.go_ahead = False
             self.update_idletasks()
             self.update()
 
@@ -107,6 +115,8 @@ class GameGrid(Frame):
 
     def key_down(self, event):
         key = repr(event.char)
+        if key == "' '":
+            self.go_ahead = True
         if key in self.commands:
             self.matrix,done = self.commands[repr(event.char)](self.matrix)
             if done:

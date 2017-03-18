@@ -46,7 +46,7 @@ def play(board):
     input = add_after([item for sublist in board for item in sublist] )
     cmd = "echo \"" + input + "\" | cat - tables.pl logic.pl | idlv --stdin applymove.py | clasp"
     cmd += "| grep -B 2 'OPTIMUM FOUND' | head -n 1 | sed -r 's/.+move\\((\w+)\\).*/\\1/'"
-    #printerr(cmd)
+    printerr(cmd)
     return os.popen(cmd).read().rstrip()
 
 def eval_branch(board):
